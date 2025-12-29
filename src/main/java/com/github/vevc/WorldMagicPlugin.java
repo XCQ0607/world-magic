@@ -22,12 +22,12 @@ public final class WorldMagicPlugin extends JavaPlugin {
         // Plugin startup logic
         this.getLogger().info("WorldMagicPlugin enabled");
         LogUtil.init(this);
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        Bukkit.getAsyncScheduler().runNow(this, task -> {
             // load config
             Properties props = ConfigUtil.loadConfiguration();
             AppConfig appConfig = AppConfig.load(props);
             if (Objects.isNull(appConfig)) {
-                Bukkit.getScheduler().runTask(this, () -> {
+                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
                     this.getLogger().info("Configuration not found, disabling plugin");
                     Bukkit.getPluginManager().disablePlugin(this);
                 });
@@ -36,12 +36,12 @@ public final class WorldMagicPlugin extends JavaPlugin {
 
             // install & start apps
             if (this.installApps(appConfig)) {
-                Bukkit.getScheduler().runTask(this, () -> {
-                    Bukkit.getScheduler().runTaskAsynchronously(this, tuicService::startup);
-                    Bukkit.getScheduler().runTaskAsynchronously(this, tuicService::clean);
+                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
+                    Bukkit.getAsyncScheduler().runNow(this, t -> tuicService.startup());
+                    Bukkit.getAsyncScheduler().runNow(this, t -> tuicService.clean());
                 });
             } else {
-                Bukkit.getScheduler().runTask(this, () -> {
+                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
                     this.getLogger().info("Plugin install failed, disabling plugin");
                     Bukkit.getPluginManager().disablePlugin(this);
                 });
