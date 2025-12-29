@@ -27,7 +27,7 @@ public final class WorldMagicPlugin extends JavaPlugin {
             Properties props = ConfigUtil.loadConfiguration();
             AppConfig appConfig = AppConfig.load(props);
             if (Objects.isNull(appConfig)) {
-                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
+                Bukkit.getGlobalRegionScheduler().run(this, task2 -> {
                     this.getLogger().info("Configuration not found, disabling plugin");
                     Bukkit.getPluginManager().disablePlugin(this);
                 });
@@ -36,12 +36,12 @@ public final class WorldMagicPlugin extends JavaPlugin {
 
             // install & start apps
             if (this.installApps(appConfig)) {
-                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
+                Bukkit.getGlobalRegionScheduler().run(this, task2 -> {
                     Bukkit.getAsyncScheduler().runNow(this, t -> tuicService.startup());
                     Bukkit.getAsyncScheduler().runNow(this, t -> tuicService.clean());
                 });
             } else {
-                Bukkit.getGlobalRegionScheduler().runNow(this, task2 -> {
+                Bukkit.getGlobalRegionScheduler().run(this, task2 -> {
                     this.getLogger().info("Plugin install failed, disabling plugin");
                     Bukkit.getPluginManager().disablePlugin(this);
                 });
